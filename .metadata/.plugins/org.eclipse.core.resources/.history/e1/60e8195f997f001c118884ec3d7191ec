@@ -1,0 +1,147 @@
+package scrapper;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class ScrapperEbay {
+	
+	public static ArrayList<String> getPageLinks(String pageRacine){
+  	  
+		  
+	      ArrayList<String> tabLinks = new ArrayList<String>();
+
+	    	  try {
+	      Document docHome = Jsoup.connect(pageRacine).get();
+	      Elements div = docHome.select("div.container");
+	      Elements links = div.select("[href*=/itm/]");
+	      for (Element element : links) {
+		    	
+	    	  String link = element.attr("abs:href");
+	    	   if(!tabLinks.contains(link) && link.contains("?hash")) {
+	          	  tabLinks.add(link);
+	    	   }
+	      }
+	      
+	      } catch (IOException e) {
+	    	    e.printStackTrace();
+	      }
+	      
+	      return tabLinks;
+	    }
+	
+	public static void getDetails (String  pageRacine) throws IOException {
+    		
+    	
+    	ArrayList<String> listLinksParPage = getPageLinks(pageRacine);
+    
+    	for(int i = 0; i< listLinksParPage.size(); i++) {
+    		
+            Document doc = Jsoup.connect(listLinksParPage.get(i)).get();
+            String url2 = doc.baseUri();
+            Elements divPrix = doc.select("span#prcIsum_bidPrice");
+            Elements divPrix1 = doc.select("span#prcIsum");
+            
+            if(divPrix.isEmpty())
+            System.out.println(divPrix1.text());
+            else
+            System.out.println(divPrix.text());
+
+		         
+            Elements divDescription = doc.select("div.ux-labels-values__labels");
+            System.out.println(url2);
+            for (Element element : divDescription) {
+				
+            	if(element.text().contains("Capacité du disque dur") || element.text().contains("Festplattenkapazität") || element.text().contains("Stockage")){
+            		Element etat = element.nextElementSibling();
+            		System.out.println("disque dure :" + etat.text());
+            	}
+            	
+            	if(element.text().contains("RAM")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("Ram de pc :" + childRam.text());
+            	}
+            	
+            	if(element.text().contains("écran") || element.text().contains("Screen")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("ecran de pc" + childRam.text());
+            	}
+            	
+            	if(element.text().contains("Processeur graphique")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("processeur de pc" + childRam.text());
+            	}
+            	
+             	if(element.text().contains("Marque") || element.text().contains("Model") || element.text().contains("Modèle")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("modele de pc :" + childRam.text());
+            	}
+             	
+            	if(element.text().contains("Système d'exploitation") || element.text().contains("Operating System")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("systeme d'exploitation" + childRam.text());
+            	}
+            	
+             	if(element.text().contains("Vitesse de processeur")){
+            		Element childRam = element.nextElementSibling();
+            		System.out.println("Vitesse de processeur" + childRam.text());
+            	}
+ 
+			
+            }
+            
+            System.out.println("****************************************************");
+    	}
+	}
+	
+	public static Boolean scrapperEbay(String page) throws IOException {
+	final URL url = new URL(page);
+	HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+	int responseCode = huc.getResponseCode();
+	
+	if (responseCode != 404) {
+	return true;
+	} else {
+	return false;
+	}
+	
+
+	}
+  public static void main(String[] args) throws IOException {
+	  	
+        String pageRacine = "https://www.ebay.fr/b/Portables-et-netbooks/175672/bn_16550150?rt=nc&_pgn=";
+    	String name = null;
+    	String screenSize = null;
+    	String screen_resolution = null;
+    	String cpu = null;
+    	String gpu = null;
+    	String ram = null;
+    	String storage = null;
+    	String os = null;
+    	String wheight = null;
+    	String price = null;
+    	String url = null;
+    	String source = null;
+    	String newline = System.getProperty("line.separator");
+    	
+    	int i = 1;
+    	while (scrapperEbay(pageRacine+i)) {
+    		
+    		
+    	}
+    	
+ 
+}
+  
+}
+

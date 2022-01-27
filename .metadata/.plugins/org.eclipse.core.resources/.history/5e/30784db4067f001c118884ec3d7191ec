@@ -1,0 +1,65 @@
+package scrapper;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class ScrapperEbay {
+
+  public static void main(String[] args) {
+	  
+	  ArrayList<String> tabLinks = new ArrayList<String>();
+
+    try {
+    	
+    	
+  
+    		
+    	
+    	
+        String pageRacine = "https://www.ebay.fr/b/Portables-et-netbooks/175672/bn_16550150?rt=nc&_pgn=1";
+    	String name = null;
+    	String screenSize = null;
+    	String screen_resolution = null;
+    	String cpu = null;
+    	String gpu = null;
+    	String ram = null;
+    	String storage = null;
+    	String os = null;
+    	String wheight = null;
+    	String price = null;
+    	String url = null;
+    	String source = null;
+    	String newline = System.getProperty("line.separator");
+      Document docHome = Jsoup.connect(pageRacine).get();
+      Elements div = docHome.select("div.container");
+      Elements links = div.select("[href*=/itm/]");
+      
+      for (Element element : links) {
+	    	
+    	  String link = element.attr("abs:href");
+    	   if(!tabLinks.contains(link)) {
+          	  tabLinks.add(link);
+          System.out.println(link);
+    	   }
+      }
+      
+      
+    	   
+    	  
+    } catch (IOException e) {
+    e.printStackTrace();
+    }
+    
+
+    }
+}
+    
+  
+  

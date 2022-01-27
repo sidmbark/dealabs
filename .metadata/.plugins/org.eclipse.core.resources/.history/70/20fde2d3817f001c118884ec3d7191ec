@@ -1,0 +1,80 @@
+package scrapper;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class ScrapperEbay {
+	
+	public static ArrayList<String> getPageLinks(String pageRacine){
+  	  
+		  
+	      ArrayList<String> tabLinks = new ArrayList<String>();
+
+	    	  try {
+	      Document docHome = Jsoup.connect(pageRacine).get();
+	      Elements div = docHome.select("div.container");
+	      Elements links = div.select("[href*=/itm/]");
+	      for (Element element : links) {
+		    	
+	    	  String link = element.attr("abs:href");
+	    	   if(!tabLinks.contains(link) && link.contains("?hash")) {
+	          	  tabLinks.add(link);
+	          System.out.println(link);
+	    	   }
+	      }
+	      
+	      } catch (IOException e) {
+	    	    e.printStackTrace();
+	      }
+	      
+	      return tabLinks;
+	    }
+
+  public static void main(String[] args) throws IOException {
+	  	
+        String pageRacine = "https://www.ebay.fr/b/Portables-et-netbooks/175672/bn_16550150?rt=nc&_pgn=1";
+    	String name = null;
+    	String screenSize = null;
+    	String screen_resolution = null;
+    	String cpu = null;
+    	String gpu = null;
+    	String ram = null;
+    	String storage = null;
+    	String os = null;
+    	String wheight = null;
+    	String price = null;
+    	String url = null;
+    	String source = null;
+    	String newline = System.getProperty("line.separator");
+    	ArrayList<String> listLinksParPage = getPageLinks(pageRacine);
+    
+    	for(int i = 0; i<1; i++) {
+    		
+            Document doc = Jsoup.connect(listLinksParPage.get(i)).get();
+            String url2 = doc.baseUri();
+            Elements divDescription = doc.select("div.ux-labels-values__labels");
+            for (Element element : divDescription) {
+				
+            	if(element.text().contains("Processeur") || element.text().contains("Festplattenkapazität") || element.text().contains("Stockage")){
+            		Element etat = element.firstElementSibling();
+            		System.out.println(etat.text());
+            	}
+            	
+
+			}	
+            
+            
+    	}
+      
+}
+    
+}
+  
